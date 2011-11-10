@@ -152,6 +152,14 @@ void spi_set_speed(struct spi_slave *slave, uint hz)
 
 void spi_init(void)
 {
+#ifdef CONFIG_OC_SIMPLE_SPI_BUILTIN_SS
+	int i;
+
+	for (i=0; i<(sizeof simple_spi_host_list)/(sizeof simple_spi_host_list[0]); i++) {
+		uint base  = simple_spi_host_list[i].base;
+		writeb(0, base + SIMPLE_SPI_SSEL);    /* Deselect all slaves */
+	}
+#endif
 }
 
 struct spi_slave *spi_setup_slave(unsigned int bus, unsigned int cs,
@@ -178,6 +186,7 @@ struct spi_slave *spi_setup_slave(unsigned int bus, unsigned int cs,
 	simple_spi->mode = mode & (SPI_CPOL | SPI_CPHA);
 	simple_spi->flg = mode & SPI_CS_HIGH ? 1 : 0;
 	spi_set_speed(&simple_spi->slave, hz);
+	spi_cs_deactivate(simple_spi);
 
 	debug("%s: bus:%i cs:%i base:%lx\n", __func__,
 		bus, cs, simple_spi->host->base);
