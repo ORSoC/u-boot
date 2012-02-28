@@ -28,6 +28,7 @@
 int board_early_init_f(void)
 {
 #ifdef CONFIG_OC_SIMPLE_SPI
+        extern void spi_init(void);
         spi_init();
 #endif
 	return 0;

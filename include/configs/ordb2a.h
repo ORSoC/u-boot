@@ -59,6 +59,18 @@
 #define CONSOLE_ARG			"console=console=ttyS0,115200\0"
 
 /*
+ * USB
+ */
+#define CONFIG_USB_OHS900_HCD
+#define CONFIG_USB_STORAGE
+#define CONFIG_DOS_PARTITION
+#define CONFIG_CMD_FAT
+#define CONFIG_CMD_USB
+#define CONFIG_SUPPORT_VFAT
+
+#define CONFIG_OHS900_HCD_BASE          0x9c000000
+
+/*
  * Ethernet
  */
 #define CONFIG_ETHOC
@@ -139,7 +151,7 @@
  */
 /* We're running in RAM */
 #define CONFIG_MONITOR_IS_IN_RAM
-#define CONFIG_SYS_MONITOR_LEN	0x40000	/* Reserve 256k */
+#define CONFIG_SYS_MONITOR_LEN	0x80000	/* Reserve 512k */
 #define CONFIG_SYS_MONITOR_BASE	(CONFIG_SYS_SDRAM_BASE + \
 				CONFIG_SYS_SDRAM_SIZE - \
 				CONFIG_SYS_MONITOR_LEN)
