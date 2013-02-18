@@ -1,6 +1,7 @@
 #include <config.h>
 OUTPUT_ARCH(or32)
 __DYNAMIC  =  0;
+ENTRY(__reset)
 
 MEMORY
 {

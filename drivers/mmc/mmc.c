@@ -416,21 +416,24 @@ static ulong mmc_bread(int dev_num, ulong start, lbaint_t blkcnt, void *dst)
 int mmc_go_idle(struct mmc* mmc)
 {
 	struct mmc_cmd cmd;
-	int err;
+	int err, i;
 
 	udelay(1000);
 
-	cmd.cmdidx = MMC_CMD_GO_IDLE_STATE;
-	cmd.cmdarg = 0;
-	cmd.resp_type = MMC_RSP_NONE;
-	cmd.flags = 0;
+	for (i=0; i<15; i++) {
+	  cmd.cmdidx = MMC_CMD_GO_IDLE_STATE;
+	  cmd.cmdarg = 0;
+	  cmd.resp_type = MMC_RSP_NONE;
+	  cmd.flags = 0;
 
-	err = mmc_send_cmd(mmc, &cmd, NULL);
+	  err = mmc_send_cmd(mmc, &cmd, NULL);
 
-	if (err)
-		return err;
+	  if (err)
+	    return err;
 
-	udelay(2000);
+	  udelay(2000);
+	}
+	udelay(20000);
 
 	return 0;
 }

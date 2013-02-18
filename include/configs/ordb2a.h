@@ -75,6 +75,11 @@
  */
 #define CONFIG_ETHOC
 #define CONFIG_SYS_ETHOC_BASE		0x92000000
+#if 0 /* Tokenbus */
+#define CONFIG_SYS_ETHOC_BASE1		0x93000000
+#define CONFIG_SYS_ETHOC_BASE2		0x94000000
+#endif
+#define CONFIG_SYS_ETHOC_BASE3		0x95000000
 
 
 /*
@@ -120,8 +125,8 @@
 #ifdef CONFIG_USE_SPIFLASH
 #define CONFIG_CMD_SAVEENV
 #define CONFIG_ENV_IS_IN_SPI_FLASH
-#define CONFIG_ENV_SIZE (16<<10)
-#define CONFIG_ENV_OFFSET (720<<10)
+#define CONFIG_ENV_SIZE 0x4000
+#define CONFIG_ENV_OFFSET 0xb4000
 #define CONFIG_ENV_SECT_SIZE 4096
 #define CONFIG_ENV_SPI_BUS 0
 #define CONFIG_ENV_SPI_CS 0
@@ -129,10 +134,29 @@
 #define CONFIG_ENV_SPI_MAX_HZ 50000000
 #endif
 
+/*
+ * I2C buses
+ */
+#define CONFIG_CMD_I2C
+#define CONFIG_HARD_I2C
+#define CONFIG_OCORES_I2C
+#define CONFIG_I2C_MULTI_BUS
+#define CONFIG_SYS_I2C_SPEED 400000
+/* Microchip 24AA02 EEPROM */
+#define CONFIG_SYS_I2C_EEPROM_ADDR              0x50
+#define CONFIG_SYS_I2C_EEPROM_ADDR_LEN          1
+#define CONFIG_SYS_EEPROM_PAGE_WRITE_BITS       3
+#define CONFIG_SYS_EEPROM_PAGE_WRITE_DELAY_MS   5
 
 /*
  * SD
  */
+#define CONFIG_MMC
+#define CONFIG_GENERIC_MMC
+#define CONFIG_OC_SD
+#define CONFIG_DOS_PARTITION
+#define CONFIG_CMD_MMC
+
 
 /*
  * Memory organisation:
@@ -156,7 +180,7 @@
 				CONFIG_SYS_SDRAM_SIZE - \
 				CONFIG_SYS_MONITOR_LEN)
 
-#ifndef CONFIG_USE_SPIFLASH
+#ifndef CONFIG_ENV_IS_IN_SPI_FLASH
 #define CONFIG_ENV_IS_NOWHERE
 #define CONFIG_ENV_SIZE		0x20000 /* Total Size of Environment, 128KB */
 #endif
@@ -188,8 +212,16 @@
 					16)	/* Print buf size */
 #define CONFIG_SYS_LOAD_ADDR		CONFIG_SYS_SDRAM_BASE
 #define CONFIG_SYS_MEMTEST_START	(CONFIG_SYS_SDRAM_BASE + 0x2000)
-#define CONFIG_SYS_MEMTEST_END		(CONFIG_SYS_INIT_SP_ADDR - 0x20000)
+/*#define CONFIG_SYS_MEMTEST_END		(CONFIG_SYS_INIT_SP_ADDR - 0x20000)*/
+#define CONFIG_SYS_MEMTEST_END		(CONFIG_SYS_MALLOC_BASE)
 #define CONFIG_CMDLINE_EDITING
+
+/*
+ * Compression
+ */
+/* #define CONFIG_GZIP enabled by default */
+#define CONFIG_BZIP2
+#define CONFIG_LZO
 
 /*
  * Command line configuration.
@@ -201,5 +233,14 @@
 # define CONFIG_CMD_DHCP
 # define CONFIG_CMD_PING
 #endif
+
+/*
+ * Autoboot
+ */
+#define CONFIG_BOOTDELAY 5
+#define CONFIG_BOOTCOMMAND \
+	"sf probe 0;" \
+	"sf read 0x1000000 0x100000 0x380000;" \
+	"bootm 0x1000000"
 
 #endif /* __CONFIG_H */
